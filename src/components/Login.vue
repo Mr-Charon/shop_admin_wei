@@ -65,17 +65,18 @@ export default {
         // })
         // 简写形式
         axios.post('http://localhost:8888/api/private/v1/login', this.form).then(res => {
-          const { meta } = res.data
+          const { meta, data } = res.data
           if (meta.status === 200) {
-            console.log(meta.msg)
+            console.log(res)
             // 消失提示框
             this.$message({
               type: 'success',
               message: meta.msg,
               duration: 1000
             })
+            localStorage.setItem('token', data.token)
             // 跳转到index
-            this.$router.push({ name: 'index' })
+            this.$router.push('/index')
           } else {
             console.log(meta.msg)
             this.$message.error(meta.msg)
@@ -87,7 +88,7 @@ export default {
 }
 </script>
 
-<style lang='scss'>
+<style lang='scss' scoped>
  .login{
    width: 100%;
    height: 100%;

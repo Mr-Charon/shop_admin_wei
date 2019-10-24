@@ -2,8 +2,13 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../components/Login.vue'
 import Index from '../components/Index.vue'
+
 Vue.use(VueRouter)
 
+// const originalPush = VueRouter.prototype.push
+// VueRouter.prototype.push = function push (location) {
+//   return originalPush.call(this, location).catch(err => err)
+// }
 const routes = [
   {
     path: '/login',
@@ -12,7 +17,6 @@ const routes = [
   },
   {
     path: '/',
-    name: 'index',
     redirect: '/index'
   },
   {
@@ -29,6 +33,8 @@ const router = new VueRouter({
 // to:到哪去
 // next()放行-->如果去登录放行；其他情况拦截到登录页
 router.beforeEach((to, from, next) => {
+  // console.log(localStorage.getItem('token'))
+  // next()
   const token = localStorage.getItem('token')
   if (to.path === '/login' || token) {
     next()
