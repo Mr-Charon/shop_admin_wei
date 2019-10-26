@@ -18,7 +18,6 @@
       <el-container>
         <el-aside width="200px">
           <el-menu
-
       router
       unique-opened
       background-color="#545c64"
@@ -53,10 +52,11 @@
             </el-menu-item>
           </el-submenu>
       </el-menu>
-
     </el-aside>
-        <el-main>Main</el-main>
-      </el-container>
+     <el-main>
+        <router-view></router-view>
+      </el-main>
+    </el-container>
 </el-container>
   <!-- </div> -->
 </template>
