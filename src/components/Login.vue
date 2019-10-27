@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 export default {
   data () {
     return {
@@ -43,46 +43,30 @@ export default {
       // 获取到表单组件
       this.$refs.form.resetFields()
     },
-    login () {
-      this.$refs.form.validate((isValid, obj) => {
-        // isValid 是否通过校验 obj 未通过校验的信息
-        if (!isValid) return
+    async login () {
+      try {
+        await this.$refs.form.validate()
         // 通过校验了, 该发ajax了
-        console.log('发ajax')
-        // axios({
-        //   method: 'post',
-        //   url: 'http://localhost:8888/api/private/v1/login',
-        //   data: this.form
-
-        // }).then(res => {
-        //   // console.log(123)
-        //   const { meta } = res.data
-        //   if (meta.status === 200) {
-        //     console.log(meta.msg)
-        //   } else {
-        //     console.log(meta.msg)
-        //   }
-        // })
+        const { meta, data } = await
         // 简写形式
-        axios.post('http://localhost:8888/api/private/v1/login', this.form).then(res => {
-          const { meta, data } = res.data
-          if (meta.status === 200) {
-            console.log(res)
-            // 消失提示框
-            this.$message({
-              type: 'success',
-              message: meta.msg,
-              duration: 1000
-            })
-            localStorage.setItem('token', data.token)
-            // 跳转到index
-            this.$router.push('/index')
-          } else {
-            console.log(meta.msg)
-            this.$message.error(meta.msg)
-          }
-        })
-      })
+        this.$axios.post('login', this.form)
+        if (meta.status === 200) {
+          // 消失提示框
+          this.$message({
+            type: 'success',
+            message: meta.msg,
+            duration: 1000
+          })
+          localStorage.setItem('token', data.token)
+          // 跳转到index
+          this.$router.push('/index')
+        } else {
+          console.log(meta.msg)
+          this.$message.error(meta.msg)
+        }
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 }
