@@ -37,28 +37,27 @@
         <el-button type="primary" @click="addUser">确 定</el-button>
       </span>
     </el-dialog>
-
     <!-- 修改弹框 -->
-     <el-dialog
+    <el-dialog
       title="修改用户"
       :visible.sync="editVisible"
       width="40%"
      >
-     <el-form  :rules='rules' ref='editForm' :model='editForm' label-width="80px">
-        <el-form-item label="用户名">
-          <el-tag type="info">{{ editForm.username }}</el-tag>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="editForm.email" placeholder='请输入邮箱'></el-input>
-        </el-form-item>
-           <el-form-item label="手机号" prop='mobile'>
-          <el-input v-model="editForm.mobile" placeholder='请输入手机号'></el-input>
-        </el-form-item>
-     </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="editVisible = false">取 消</el-button>
-        <el-button type="primary" @click="editUser">确 定</el-button>
-      </span>
+     <el-form :rules='rules' ref='editForm' :model='editForm' label-width="80px">
+            <el-form-item label="用户名">
+              <el-tag type="info">{{ editForm.username }}</el-tag>
+            </el-form-item>
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="editForm.email" placeholder='请输入邮箱'></el-input>
+            </el-form-item>
+              <el-form-item label="手机号" prop='mobile'>
+              <el-input v-model="editForm.mobile" placeholder='请输入手机号'></el-input>
+            </el-form-item>
+        </el-form>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="editVisible = false">取 消</el-button>
+          <el-button type="primary" @click="editUser">确 定</el-button>
+        </span>
     </el-dialog>
     <!-- 表格 -->
     <el-table :data=userList>
@@ -275,7 +274,6 @@ export default {
         console.log(e)
       }
     }
-
   }
 }
 </script>
