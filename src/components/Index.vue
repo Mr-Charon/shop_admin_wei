@@ -18,44 +18,37 @@
       <el-container>
         <el-aside width="200px">
           <el-menu
-      router
-      unique-opened
-      background-color="#545c64"
-      text-color="#fff"
-      active-text-color="#ffd04b">
-       <el-submenu index="1">
+          router
+          unique-opened
+          background-color="#545c64"
+          text-color="#fff"
+          :default-active="defaultActive"
+          active-text-color="#ffd04b">
+          <el-submenu
+          :index="menu.path"
+          v-for='menu in menuList'
+          :key="menu.id"
+          >
             <!-- 标题 -->
             <template v-slot:title>
               <i class="el-icon-location"></i>
-              <span>用户管理</span>
+              <span>{{menu.authName}}</span>
             </template>
             <!-- 解析时, 会将配置的路径, 当成绝对路径使用, 写的是users => /users -->
-            <el-menu-item index="users">
+            <el-menu-item
+            :index="item.path"
+            v-for='item in menu.children'
+            :key="item.id"
+            >
               <i class="el-icon-menu"></i>
-              <span slot="title">用户列表</span>
+              <span slot="title">{{item.authName}}</span>
             </el-menu-item>
           </el-submenu>
-    <el-submenu index="2">
-            <!-- 标题 -->
-            <template v-slot:title>
-              <i class="el-icon-location"></i>
-              <span>权限管理</span>
-            </template>
-            <!-- 解析时, 会将配置的路径, 当成绝对路径使用, 写的是users => /users -->
-            <el-menu-item index="roles">
-              <i class="el-icon-menu"></i>
-              <span slot="title">角色列表</span>
-            </el-menu-item>
-            <el-menu-item index="rights">
-              <i class="el-icon-menu"></i>
-              <span slot="title">权限列表</span>
-            </el-menu-item>
-          </el-submenu>
-      </el-menu>
-    </el-aside>
-     <el-main>
-        <router-view></router-view>
-      </el-main>
+        </el-menu>
+        </el-aside>
+        <el-main>
+          <router-view></router-view>
+        </el-main>
     </el-container>
 </el-container>
   <!-- </div> -->
@@ -63,7 +56,28 @@
 
 <script>
 export default {
+  data () {
+    return {
+      menuList: []
+    }
+  },
+  // 设置高亮
+  computed: {
+    defaultActive () {
+    // 根据导航栏
+      return this.$route.path.slice(1)
+    }
+  },
+  // 进入就渲染
+  async created () {
+    const { meta, data } = await this.$axios.get('menus')
+    if (meta.status === 200) {
+      this.menuList = data
+      // console.log(data)
+    }
+  },
   methods: {
+    // 退出登录
     logout () {
       this.$confirm('确定退出该系统么?', '提示', {
         type: 'warning'
