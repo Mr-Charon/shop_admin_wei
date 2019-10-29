@@ -80,7 +80,7 @@
           <template v-slot:default='obj'>
             <el-button plain size="small" icon="el-icon-edit" type='primary' @click="showEditDialog(obj.row)"></el-button>
             <el-button plain size="small" icon="el-icon-delete" type='danger' @click="deluser(obj.row.id)"></el-button>
-            <el-button plain size="small" icon="el-icon-check" type='success'>分配角色</el-button>
+            <el-button plain size="small" icon="el-icon-check" type='success' @click="showUserVisible(obj.row)">分配角色</el-button>
           </template>
       </el-table-column>
     </el-table>
@@ -94,6 +94,33 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="total">
     </el-pagination>
+    <!-- -分配角色框 -->
+     <el-dialog
+      title="分配角色"
+      :visible.sync="userVisible"
+      width="40%"
+     >
+        <el-form  :model='userForm' label-width="80px">
+                <el-form-item label="用户名">
+                  <el-tag type="info">{{ userForm.username }}</el-tag>
+                </el-form-item>
+                <el-form-item label="角色列表" prop="email">
+                  <el-select v-model="userForm.rid" placeholder="请选择">
+                    <el-option
+                        v-for="item in options"
+                        :key="item.id"
+                        :label="item.roleName"
+                        :value="item.id">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="userVisible = false">取 消</el-button>
+          <el-button type="primary" @click="assignRole">分配</el-button>
+        </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -109,6 +136,7 @@ export default {
       pagenum: 1, // 第几页
       pagesize: 2, // 每页条数
       total: 0,
+      // 添加弹框
       dialogVisible: false,
       form: {
         username: '',
@@ -132,13 +160,22 @@ export default {
           { pattern: /^1[3-9]\d{9}/, message: '请输入正确的手机号码', rigger: ['change', 'blur'] }
         ]
       },
+      // 修改弹框
       editVisible: false,
       editForm: {
         id: '',
         userneme: '',
         email: '',
         mobile: ''
-      }
+      },
+      // 分配角色弹框
+      userVisible: false,
+      userForm: {
+        id: '',
+        rid: '',
+        userneme: ''
+      },
+      options: []
     }
   },
   methods: {
@@ -217,6 +254,7 @@ export default {
     showEdit () {
       this.dialogVisible = true
     },
+    // 添加用户
     async addUser () {
       try {
         // 进行表单校验
@@ -272,6 +310,47 @@ export default {
         }
       } catch (e) {
         console.log(e)
+      }
+    },
+    // 弹出分配角色框
+    async showUserVisible (row) {
+      this.userVisible = true
+      this.userForm.id = row.id
+      this.userForm.username = row.username
+      // 数据回显
+      const resUser = await this.$axios.get(`users/${row.id}`)
+      if (resUser.meta.status === 200) {
+        const rid = resUser.data.rid
+        // console.log(resUser)
+        // 新用户给空
+        this.userForm.rid = rid === -1 ? '' : rid
+      }
+      // 获取需要分配的角色列表
+      const { meta, data } = await this.$axios.get('roles')
+      if (meta.status === 200) {
+        this.options = data
+        // console.log(data)
+      } else {
+        this.$message.error(meta.msg)
+      }
+    },
+    // 分配角色
+    async assignRole () {
+      // 从userForm中获取到用户id和rid
+      const { id, rid } = this.userForm
+      if (rid === '') {
+        this.$message.error('请选择角色')
+        return
+      }
+      const { meta } = await this.$axios.put(`users/${id}/role`, { rid })
+      console.log(meta)
+
+      if (meta.status === 200) {
+        this.$message.success(meta.msg)
+        this.userVisible = false
+        this.getUserList()
+      } else {
+        this.$message.error(meta.msg)
       }
     }
   }

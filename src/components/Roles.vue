@@ -124,7 +124,6 @@ export default {
         children: 'children',
         label: 'authName'
       }
-
     }
   },
   created () {
