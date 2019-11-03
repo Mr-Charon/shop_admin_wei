@@ -65,7 +65,7 @@ export default {
   computed: {
     defaultActive () {
     // 根据导航栏
-      return this.$route.path.slice(1)
+      return this.$route.path.slice(1).split('-')[0]
     }
   },
   // 进入就渲染

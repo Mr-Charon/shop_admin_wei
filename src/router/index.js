@@ -7,6 +7,7 @@ import Roles from '../components/rights/Roles.vue'
 import Rights from '../components/rights/Rights.vue'
 import Goods from '../components/products/Goods.vue'
 import Categories from '../components/products/Categories.vue'
+import GoodsAdd from '../components/products/GoodsADD.vue'
 Vue.use(VueRouter)
 // 解决更新的小bug,重复点不报错
 const originalPush = VueRouter.prototype.push
@@ -27,7 +28,8 @@ const routes = [
       { path: '/roles', component: Roles },
       { path: '/rights', component: Rights },
       { path: '/goods', component: Goods },
-      { path: '/categories', component: Categories }
+      { path: '/categories', component: Categories },
+      { path: '/goods-add', component: GoodsAdd }
 
     ]
   },
